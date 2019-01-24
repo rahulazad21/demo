@@ -1,0 +1,24 @@
+---
+ - hosts: all 
+   gather_facts: false 
+   remote_user: root
+   
+   tasks: 
+    - name: install python2
+      raw: yum install python
+
+#    - name: Set authorized key taken from file
+#      authorized_key:
+#        user: root
+        #state: present
+#        exclusive: no
+#        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}" 
+    - name: create /root/.ssh
+      file: 
+       path: /root/.ssh
+       state: directory
+       mode: 0700
+    - name: create /root/.ssh/authorized_key from our local ssh pubkey
+      lineinfile:
+        dest: /root/.ssh/authorized_keys 
+        line: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
